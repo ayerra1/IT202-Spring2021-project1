@@ -53,7 +53,34 @@ input[type=number] {
 <div id="content">
  
 
- 
+ <!-- content for home/instructions screen -->
+  <div id="Home/Instructions"> 
+  <h1> Home </h1>
+  <br>
+  <p>This app lets you search the city of Chicago city-Owned Land Inventory data <br>
+  <br>
+  you can find more information about the data at 
+  <a href="https://dev.socrata.com/foundry/data.cityofchicago.org/aksk-kvfp">https://dev.socrata.com/foundry/data.cityofchicago.org/aksk-kvfp</a>
+  <br><br>
+  To get started, navigate to the Form screen, and enter the ward number. Then, you can view a list of results in the form of cards in Data screen or view a map of the results on the Map screen.
+   </p>
+  </div>
+
+  <!-- content for form screen -->
+  <div id="Form">
+  <h1>Form</h1>
+  <form action="/action_page.php" method="get" id="nameform">
+  <label for="fname">Ward Number:</label>
+  <input type="number" name="search" id="wardNumber" placeholder="Enter the ward Number.." value="">
+  </form>
+  <button type="button" 
+            onclick="myFunction()"> 
+      Search
+  </button> 
+  <br>
+  
+  <br>
+  </div>
 
  
 
