@@ -158,9 +158,30 @@ input[type=number] {
       })
 
       .then ( (json) => {
-        // looping through json object
+        let iter = 0;
         for (let elem of json) {
-          // cloning a new card
+
+          if(iter === 0) {
+            let temp =document.querySelector(".card");
+            // stroing the community area name
+            let areaName = elem.community_area_name;
+            // storing the pin
+            let pin = elem.pin;
+            // storing the content that should print on first line of card.
+            let firstLine = areaName + " - " + pin;
+            temp.querySelector(".card-title").innerText = firstLine;
+            // storing address
+            let address = elem.address;
+            // storing square feet
+            let square_feat = elem.sq_ft.toString();
+            let secondLine = address + " - " + square_feat;
+            temp.querySelector(".card-subtitle1.mb-2.text-muted").innerText = secondLine;
+            temp.querySelector(".card-subtitle2.mb-2.text-muted").innerText = pin;
+            // adding to dom
+            document.querySelector(".row").appendChild(temp);
+            iter++;
+          } else if (iter !=0) {
+                // cloning a new card
           let clone = document.querySelector(".card").cloneNode(true);
           // stroing the community area name
           let areaName = elem.community_area_name;
@@ -178,6 +199,12 @@ input[type=number] {
           clone.querySelector(".card-subtitle2.mb-2.text-muted").innerText = pin;
           // adding to dom
           document.querySelector(".row").appendChild(clone);
+           clone.setAttribute("id", "clear");
+          iter++;
+          }
+          
+
+        
         }
       });
         } 
