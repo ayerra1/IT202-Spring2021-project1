@@ -14,6 +14,7 @@ input[type=number] {
   background-color: white;
  
 }
+.screen{display: none;}
 </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
   </head>
@@ -29,7 +30,7 @@ input[type=number] {
     <div class="collapse navbar-collapse" id="topnav">
         <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#" data-screen="Home/Instructions">Home/Instructions</a>
+          <a class="nav-link active" aria-current="page" href="#" data-screen="Home">Home/Instructions</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" data-screen="Form">Form</a>
@@ -54,7 +55,7 @@ input[type=number] {
  
 
  <!-- content for home/instructions screen -->
-  <div id="Home/Instructions"> 
+  <div id="Home" class="screen"> 
   <h1> Home </h1>
   <br>
   <p>This app lets you search the city of Chicago city-Owned Land Inventory data <br>
@@ -67,7 +68,7 @@ input[type=number] {
   </div>
 
   <!-- content for form screen -->
-  <div id="Form">
+  <div id="Form" class="screen">
   <h1>Form</h1>
   <form action="/action_page.php" method="get" id="nameform">
   <label for="fname">Ward Number:</label>
@@ -84,7 +85,7 @@ input[type=number] {
 
     
  <!-- content for Data screen -->
-<div id="Data">
+<div id="Data" class="screen">
         
         <h1> Welcome to Data screen </h1>
         <h2> below are the results for the enetered ward number </h2>
@@ -100,9 +101,13 @@ input[type=number] {
           
         </div>        
       </div>
+    
+    <div class="screen", id="Map"> 
+  <h1> Welcome to Map Screen </h1>
+</div>
 
   <!-- content for about page   -->
-  <div id="About">
+  <div id="About" class="screen">
     <h1>About</h1><br>
     <p> This is a web based application that allows the user to search for Chicago City-Owned Land Inventory data 
       <br><br>
@@ -114,6 +119,30 @@ input[type=number] {
 </div>  
 
     <script>
+        
+            document.querySelector("#Home").style.display="block";
+     let navAnchors = document.querySelectorAll("div#topnav a");
+     navAnchors.forEach( (anchor) => {
+       anchor.addEventListener("click", (event) => {
+         // hide all screens first
+         document.querySelectorAll(".screen").forEach( (screen) => {
+           screen.style.display="none";
+         })
+
+        // read the data screen attribute
+        let screen = event.target.getAttribute("data-screen");
+
+        // find the corrosponding screen
+        let targetScreen = document.querySelector("#" + screen);
+
+        // show
+        targetScreen.style.display = "block";
+         
+       })
+     })
+        
+        
+        
     
         // variable to store the ward number from the input field
       let wardvAL;
