@@ -83,30 +83,23 @@ input[type=number] {
   </div>
 
     
-  <!-- content for Data screen -->
-  <div id="Data"> 
-
-
-     <div class="container">
-    <h1>Data Screen</h1>
-
-
-    <div class="row">
-      <div class="card" >
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="card-link">Card link</a>
-        </div>
+ <!-- content for Data screen -->
+<div id="Data">
+        
+        <h1> Welcome to Data screen </h1>
+        <h2> below are the results for the enetered ward number </h2>
+        
+        <div class="row">
+          <div class="card" >
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <h6 class="card-subtitle1 mb-2 text-muted">Card subtitle1</h6>
+              <h6 class="card-subtitle2 mb-2 text-muted">Card subtitle2</h6>
+            </div>
+          </div>
+          
+        </div>        
       </div>
-
-
-    </div>
-
-
-    </div>
-  </div>
 
   <!-- content for about page   -->
   <div id="About">
@@ -122,7 +115,44 @@ input[type=number] {
 
     <script>
     
-       
+        // variable to store the ward number from the input field
+      let wardvAL;
+      // function to handle the fetch request and to create the cards each time a war number is entered.
+     function myFunction() { 
+             wardvAL =   document.querySelector("#wardNumber").value; 
+   // storing the url into avariable by concatinating our query
+               let fetchUrl = "https://data.cityofchicago.org/resource/aksk-kvfp.json" + "?ward=" + wardvAL;
+ // fetching the data   
+      fetch (fetchUrl)
+      .then ( (response)=> {
+        return response.json()
+      })
+
+      .then ( (json) => {
+        // looping through json object
+        for (let elem of json) {
+          // cloning a new card
+          let clone = document.querySelector(".card").cloneNode(true);
+          // stroing the community area name
+          let areaName = elem.community_area_name;
+          // storing the pin
+          let pin = elem.pin;
+          // storing the content that should print on first line of card.
+          let firstLine = areaName + " - " + pin;
+          clone.querySelector(".card-title").innerText = firstLine;
+          // storing address
+          let address = elem.address;
+          // storing square feet
+          let square_feat = elem.sq_ft.toString();
+          let secondLine = address + " - " + square_feat;
+          clone.querySelector(".card-subtitle1.mb-2.text-muted").innerText = secondLine;
+          clone.querySelector(".card-subtitle2.mb-2.text-muted").innerText = pin;
+          // adding to dom
+          document.querySelector(".row").appendChild(clone);
+        }
+      });
+        } 
+
       
     </script>
   </body>
