@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>repl.it</title>
+    
     <style> 
 input[type=number] {
   width: 100%;
@@ -15,13 +16,29 @@ input[type=number] {
  
 }
 .screen{display: none;}
+/* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+    height: 100%;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+
+    
   </head>
   <body>
 
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  
+  <!-- code for navbar -->
+  <!-- taken from bootstarp -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">City-Owned Land Inventory</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +56,7 @@ input[type=number] {
           <a class="nav-link" href="#" data-screen="Data">Data</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-screen="Map">Map</a>
+          <a class="nav-link" href="#" data-screen="map">Map</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" data-screen="About">About</a>
@@ -51,11 +68,9 @@ input[type=number] {
   </div>
 </nav>
 
-<div id="content">
- 
-
- <!-- content for home/instructions screen -->
-  <div id="Home" class="screen"> 
+<div id="content" >
+  <!-- content for home/instructions screen -->
+  <div class="screen" id="Home"> 
   <h1> Home </h1>
   <br>
   <p>This app lets you search the city of Chicago city-Owned Land Inventory data <br>
@@ -83,8 +98,7 @@ input[type=number] {
   <br>
   </div>
 
-    
- <!-- content for Data screen -->
+  <!-- content for Data screen -->
 <div id="Data" class="screen">
         
         <h1> Welcome to Data screen </h1>
@@ -101,10 +115,11 @@ input[type=number] {
           
         </div>        
       </div>
-    
-    <div class="screen", id="Map"> 
-  <h1> Welcome to Map Screen </h1>
-</div>
+
+
+
+
+
 
   <!-- content for about page   -->
   <div id="About" class="screen">
@@ -114,13 +129,35 @@ input[type=number] {
       This app was built by <strong>Anurag Reddy Yerrabotula</strong>
     </p>
   </div>
-  
 
 </div>  
 
+
+<!-- content for map screen -->
+
+<div class="screen", id="map"> 
+    
+</div>
+  
+
+
+
     <script>
-        
-            document.querySelector("#Home").style.display="block";
+
+      let map;
+      let markersList = [];
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 41.8781, lng: -87.6298 },
+          zoom: 8,
+        });
+      }
+    
+
+
+
+      document.querySelector("#Home").style.display="block";
      let navAnchors = document.querySelectorAll("div#topnav a");
      navAnchors.forEach( (anchor) => {
        anchor.addEventListener("click", (event) => {
@@ -140,23 +177,27 @@ input[type=number] {
          
        })
      })
-        
-        
-        
-    
-        // variable to store the ward number from the input field
+
+     // variable to store the ward number from the input field
       let wardvAL;
       // function to handle the fetch request and to create the cards each time a war number is entered.
      function myFunction() { 
              wardvAL =   document.querySelector("#wardNumber").value; 
    // storing the url into avariable by concatinating our query
                let fetchUrl = "https://data.cityofchicago.org/resource/aksk-kvfp.json" + "?ward=" + wardvAL;
-         
-         // each time when user enters new ward number old data will be cleared.
+
+// each time when user enters new ward number old data will be cleared.
 let empty = document.querySelectorAll("#clear");
         for(let x of empty) {
           x.remove();
         }
+
+        for (delMark of markersList) {
+          delMark.setMap(null);
+        }
+
+        
+
  // fetching the data   
       fetch (fetchUrl)
       .then ( (response)=> {
@@ -164,6 +205,7 @@ let empty = document.querySelectorAll("#clear");
       })
 
       .then ( (json) => {
+        // looping through json object
         let iter = 0;
         for (let elem of json) {
 
@@ -185,6 +227,26 @@ let empty = document.querySelectorAll("#clear");
             temp.querySelector(".card-subtitle2.mb-2.text-muted").innerText = pin;
             // adding to dom
             document.querySelector(".row").appendChild(temp);
+
+
+            // adding markers to the map
+            let marker = new google.maps.Marker({
+              position: {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)},
+              map: map
+            });
+            markersList.push(marker);
+            
+          // adding infowindow to the map
+          let finalContent = firstLine + "\n" + secondLine + "\n" + pin;
+           let infoWindow = new google.maps.InfoWindow({
+              content: finalContent,
+              maxWidth: 210
+            });
+            
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker);
+            });
+
             iter++;
           } else if (iter !=0) {
                 // cloning a new card
@@ -206,6 +268,26 @@ let empty = document.querySelectorAll("#clear");
           // adding to dom
           document.querySelector(".row").appendChild(clone);
            clone.setAttribute("id", "clear");
+           // adding the markers to the map.
+            let marker = new google.maps.Marker({
+              position: {lat: parseFloat(elem.latitude), lng: parseFloat(elem.longitude)},
+              map: map
+            });
+
+              markersList.push(marker);
+        // adding the infowindow  
+ let finalContent = firstLine + "\n" + secondLine + "\n" + pin;
+
+     let infoWindow = new google.maps.InfoWindow({
+              content: finalContent,
+                 maxWidth: 210
+            });
+            
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker);
+            });
+
+
           iter++;
           }
           
@@ -216,6 +298,20 @@ let empty = document.querySelectorAll("#clear");
         } 
 
       
+
+     
+      
     </script>
+
+
+    
+
+     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf84oUbgbgCJL8azPRNrDxqq49jUTw9Uo&callback=initMap">
+      async
+    ></script>
+
+
   </body>
 </html>
